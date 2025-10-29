@@ -1,29 +1,27 @@
-require('dotenv').config();
+require("dotenv").config();
 
 var http, director, cool, bot, router, server, port;
 
-http        = require('http');
-director    = require('director');
-cool        = require('cool-ascii-faces');
-bot         = require('./bot.js');
-
-
+http = require("http");
+director = require("director");
+cool = require("cool-ascii-faces");
+bot = require("./bot.js");
 
 router = new director.http.Router({
-  '/' : {
+  "/": {
     post: bot.respond,
-    get: ping
-  }
+    get: ping,
+  },
 });
 
 server = http.createServer(function (req, res) {
   req.chunks = [];
-  req.on('data', function (chunk) {
+  req.on("data", function (chunk) {
     req.chunks.push(chunk.toString());
   });
 
-  router.dispatch(req, res, function(err) {
-    res.writeHead(err.status, {"Content-Type": "text/plain"});
+  router.dispatch(req, res, function (err) {
+    res.writeHead(err.status, { "Content-Type": "text/plain" });
     res.end(err.message);
   });
 });
