@@ -1,12 +1,15 @@
-var HTTPS = require("https");
-var cool = require("cool-ascii-faces");
+const HTTPS = require("https");
+const cool = require("cool-ascii-faces");
+const util = require("util");
 
-var botID = process.env.BOT_ID;
-console.log("Bot ID: " + botID);
+const botID = process.env.BOT_ID;
+const accessToken = process.env.GROUPME_ACCESS_TOKEN;
+const groupID = process.env.GROUP_ID;
+
 function respond() {
-  var request = JSON.parse(this.req.chunks[0]),
+  console.log(this);
+  const request = JSON.parse(this.req.chunks[0]),
     botRegex = /^\/cool guy$/;
-
   if (request.text && botRegex.test(request.text)) {
     this.res.writeHead(200);
     postMessage();
@@ -18,39 +21,64 @@ function respond() {
   }
 }
 
-function postMessage() {
-  var botResponse, options, body, botReq;
+async function fetchGroupMessages() {
+  try {
+    console.log("Fetching recent messages...");
 
-  botResponse = cool();
+    const response = await fetch(
+      `https://api.groupme.com/v3/groups/${groupID}/messages?token=${accessToken}`
+    );
 
-  options = {
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const data = await response.json();
+    const recentMessages = data.response.messages.map((msg) => msg.text);
+
+    this.res.writeHead(200);
+    this.res.end(recentMessages.join("\n"));
+  } catch (error) {
+    console.error("Error fetching messages:", error);
+  }
+}
+
+const postMessage = () => {
+  const botResponse = cool();
+
+  const options = {
     hostname: "api.groupme.com",
     path: "/v3/bots/post",
     method: "POST",
   };
-
-  body = {
+  const body = {
     bot_id: botID,
     text: botResponse,
   };
 
   console.log("sending " + botResponse + " to " + botID);
 
-  botReq = HTTPS.request(options, function (res) {
-    if (res.statusCode == 202) {
+  const botReq = HTTPS.request(options, (res) => {
+    console.log(util.inspect(res.statusCode, false, 1, true));
+
+    if (res.statusCode === 200) {
+      // res.send(`${res.statusCode} OK`);
       //neat
+    } else if (res.statusCode === 202) {
+      // res.send(`${res.statusCode} OK`);
     } else {
-      console.log("rejecting bad status code " + res.statusCode);
+      console.log(`rejecting bad status code ${res.statusCode}"`);
     }
   });
 
-  botReq.on("error", function (err) {
-    console.log("error posting message " + JSON.stringify(err));
+  botReq.on("error", (err) => {
+    console.log(`error posting message ${JSON.stringify(err)}`);
   });
-  botReq.on("timeout", function (err) {
-    console.log("timeout posting message " + JSON.stringify(err));
+  botReq.on("timeout", (err) => {
+    console.log(err);
+    console.log(`timeout posting message ${JSON.stringify(err)}`);
   });
   botReq.end(JSON.stringify(body));
-}
+};
 
 exports.respond = respond;
+exports.groupMessages = fetchGroupMessages;

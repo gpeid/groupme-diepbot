@@ -12,15 +12,18 @@ router = new director.http.Router({
     post: bot.respond,
     get: ping,
   },
+  "/messages": {
+    get: bot.groupMessages,
+  }
 });
 
-server = http.createServer(function (req, res) {
+server = http.createServer((req, res) => {
   req.chunks = [];
-  req.on("data", function (chunk) {
+  req.on("data", (chunk) => {
     req.chunks.push(chunk.toString());
   });
 
-  router.dispatch(req, res, function (err) {
+  router.dispatch(req, res, (err) => {
     res.writeHead(err.status, { "Content-Type": "text/plain" });
     res.end(err.message);
   });
