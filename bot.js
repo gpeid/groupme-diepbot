@@ -21,7 +21,7 @@ function respond() {
   }
 }
 
-const postMessage = () => {
+const postMessage = async () => {
   const botResponse = cool();
 
   const options = {
@@ -36,7 +36,7 @@ const postMessage = () => {
 
   console.log("sending " + botResponse + " to " + botID);
 
-  const botReq = HTTPS.request(options, (res) => {
+  const botReq = await HTTPS.request(options, (res) => {
     console.log(util.inspect(res.statusCode, false, 1, true));
 
     if (res.statusCode === 200) {
