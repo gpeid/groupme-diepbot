@@ -6,10 +6,10 @@ const botID = process.env.BOT_ID;
 const accessToken = process.env.GROUPME_ACCESS_TOKEN;
 const groupID = process.env.GROUP_ID;
 
+const botRegex = /^\/cool guy|gabujeeno|kylan$/;
+
 function respond() {
-  console.log(this);
-  const request = JSON.parse(this.req.chunks[0]),
-    botRegex = /^\/cool guy$/;
+  const request = JSON.parse(this.req.chunks[0]);
   if (request.text && botRegex.test(request.text)) {
     this.res.writeHead(200);
     postMessage();
@@ -32,8 +32,15 @@ async function fetchGroupMessages() {
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
+
     const data = await response.json();
     const recentMessages = data.response.messages.map((msg) => msg.text);
+
+    if (recentMessages[0] && botRegex.test(recentMessages[0])) {
+      postMessage();
+    } else {
+      console.log("don't care");
+    }
 
     this.res.writeHead(200);
     this.res.end(recentMessages.join("\n"));
