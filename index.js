@@ -1,11 +1,12 @@
 require("dotenv").config();
 
-var http, director, cool, bot, router, server, port;
+const http = require("http");
+const director = require("director");
+const cool = require("cool-ascii-faces");
+const bot = require("./bot.js");
+const messages = require("./messages.js");
 
-http = require("http");
-director = require("director");
-cool = require("cool-ascii-faces");
-bot = require("./bot.js");
+var router, server, port;
 
 router = new director.http.Router({
   "/": {
@@ -13,8 +14,8 @@ router = new director.http.Router({
     get: ping,
   },
   "/messages": {
-    get: bot.groupMessages,
-  }
+    get: messages.groupMessages,
+  },
 });
 
 server = http.createServer((req, res) => {
