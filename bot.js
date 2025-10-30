@@ -36,12 +36,6 @@ async function fetchGroupMessages() {
     const data = await response.json();
     const recentMessages = data.response.messages.map((msg) => msg.text);
 
-    if (recentMessages[0] && botRegex.test(recentMessages[0])) {
-      postMessage();
-    } else {
-      console.log("don't care");
-    }
-
     this.res.writeHead(200);
     this.res.end(recentMessages.join("\n"));
   } catch (error) {
