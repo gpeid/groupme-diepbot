@@ -4,24 +4,20 @@ const util = require("util");
 
 const botID = process.env.BOT_ID;
 
+const botRegex = /^\/cool guy|gabujeeno|kylan|tree of wisdom$/;
 
-const botRegex = /^\/cool guy|gabujeeno|kylan$/;
-
-async function respond() {
-  const request = JSON.parse(this.req.chunks[0]);
-  console.log(request.text);
-  if (request.text && botRegex.test(request.text)) {
-    this.res.writeHead(200);
-    await postMessage();
-    this.res.end();
+function respond() {
+  console.log(this.req.body);
+  const request = this.req.body;
+  const text = request.text.toLowerCase().trim();
+  if (request.text && botRegex.test(text)) {
+    postMessage();
   } else {
     console.log("don't care");
-    this.res.writeHead(200);
-    this.res.end();
   }
 }
 
-const postMessage = async () => {
+function postMessage() {
   const botResponse = cool();
 
   const options = {
@@ -37,14 +33,14 @@ const postMessage = async () => {
   console.log("sending " + botResponse + " to " + botID);
 
   const botReq = HTTPS.request(options, (res) => {
+    console.log(res.statusCode);
+
     // console.log(util.inspect(res.statusCode, false, 1, true));
 
     if (res.statusCode === 200) {
       console.log(res.statusCode);
-
     } else if (res.statusCode === 202) {
       console.log("message posted successfully");
-
     } else {
       console.log(`rejecting bad status code ${res.statusCode}"`);
     }
@@ -58,6 +54,6 @@ const postMessage = async () => {
     console.log(`timeout posting message ${JSON.stringify(err)}`);
   });
   botReq.end(JSON.stringify(body));
-};
+}
 
 exports.respond = respond;
