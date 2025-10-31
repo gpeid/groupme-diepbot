@@ -6,9 +6,8 @@ const cool = require("cool-ascii-faces");
 const bot = require("./bot.js");
 const messages = require("./messages.js");
 
-var router, server, port;
 
-router = new director.http.Router({
+const router = new director.http.Router({
   "/": {
     post: bot.respond,
     get: ping,
@@ -18,7 +17,7 @@ router = new director.http.Router({
   },
 });
 
-server = http.createServer((req, res) => {
+const server = http.createServer((req, res) => {
   req.chunks = [];
   req.on("data", (chunk) => {
     req.chunks.push(chunk.toString());
@@ -30,7 +29,7 @@ server = http.createServer((req, res) => {
   });
 });
 
-port = Number(process.env.PORT || 5001);
+const port = Number(process.env.PORT || 5001);
 server.listen(port);
 
 function ping() {

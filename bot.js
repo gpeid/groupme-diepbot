@@ -7,12 +7,12 @@ const botID = process.env.BOT_ID;
 
 const botRegex = /^\/cool guy|gabujeeno|kylan$/;
 
-function respond() {
+async function respond() {
   const request = JSON.parse(this.req.chunks[0]);
-  console.log(request);
+  console.log(request.text);
   if (request.text && botRegex.test(request.text)) {
     this.res.writeHead(200);
-    postMessage();
+    await postMessage();
     this.res.end();
   } else {
     console.log("don't care");
@@ -36,14 +36,15 @@ const postMessage = async () => {
 
   console.log("sending " + botResponse + " to " + botID);
 
-  const botReq = await HTTPS.request(options, (res) => {
-    console.log(util.inspect(res.statusCode, false, 1, true));
+  const botReq = HTTPS.request(options, (res) => {
+    // console.log(util.inspect(res.statusCode, false, 1, true));
 
     if (res.statusCode === 200) {
-      // res.send(`${res.statusCode} OK`);
-      //neat
+      console.log(res.statusCode);
+
     } else if (res.statusCode === 202) {
-      // res.send(`${res.statusCode} OK`);
+      console.log("message posted successfully");
+
     } else {
       console.log(`rejecting bad status code ${res.statusCode}"`);
     }
