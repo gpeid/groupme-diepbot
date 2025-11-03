@@ -47,8 +47,8 @@ app.get("/", (req, res) => {
 });
 
 app.post("/", (req, res) => {
-  res.send(req.body);
-  bot.respond.call({ req, res});
+  // bot.respond.call({ req, res});
+  bot.postMessage(req, res);
 });
 
 // app.get("/messages", (req, res) => {
