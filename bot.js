@@ -2,21 +2,19 @@ const cool = require("cool-ascii-faces");
 
 const botID = process.env.BOT_ID;
 
-// const botRegex = /^\/cool guy|gabujeeno|kylan|tree of wisdom$/;
+const botRegex = /^\/cool guy|gabujeeno|kylan|tree of wisdom$/;
 
 function respond() {
   console.log(this.req.body);
   const botResponse = cool();
 
   const request = this.req.body;
-  // const text = request?.text?.toLowerCase().trim();
+  const text = request?.text?.toLowerCase().trim();
 
-  // const botResponseText = request?.text && botRegex.test(text) && botResponse;
-  const botResponseText = botResponse;
+  const botResponseText = request?.text && botRegex.test(text) && botResponse;
 
-  // console.log(request.text, botRegex.test(text));
-  // request?.text && botRegex.test(text)
-  request?.text
+  console.log(request.text, botRegex.test(text));
+  request?.text && botRegex.test(text)
     ? postMessage(botResponseText)
     : console.log("Text ignored don't care");
 }
@@ -32,7 +30,7 @@ async function postMessage(text) {
       text: text,
     }),
   };
-
+  
   try {
     console.log("Posting bot response...");
 
