@@ -82,16 +82,16 @@ async function postMessage(req, res) {
 
   const postToGroupmeBot = async () => {
     try {
-      const externalApiUrl = `${baseUrl}/bots/post`; // Replace with your external API endpoint
+      const apiUrl = `${baseUrl}/bots/post`;
       const dataToSend = JSON.stringify({
         bot_id: botID,
         text: botResponse,
-      }); // Data from the client making the request to your Express app
+      });
       const headers = {
         "Content-Type": "application/json",
       };
 
-      const response = await axios.post(externalApiUrl, dataToSend, {
+      const response = await axios.post(apiUrl, dataToSend, {
         headers: headers,
       });
       console.log(`posting message... ${botResponse}`);
@@ -100,8 +100,6 @@ async function postMessage(req, res) {
     } catch (error) {
       console.error("Error making external API POST request:", error.message);
       if (error.response) {
-        // The request was made and the server responded with a status code
-        // that falls out of the range of 2xx
         res.status(error.response.status).json(error.response.data);
       } else if (error.request) {
         // The request was made but no response was received
@@ -119,7 +117,7 @@ async function postMessage(req, res) {
 
   request?.text && botRegex.test(text)
     ? await postToGroupmeBot(botResponse)
-    : console.log("Text ignored don't care");
+    : res.status(200).json({ ...req.body, message: "Text ignored." });
 }
 
 exports.postMessage = postMessage;
