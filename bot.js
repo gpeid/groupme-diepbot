@@ -2,7 +2,8 @@ const cool = require("cool-ascii-faces");
 
 const botID = process.env.BOT_ID;
 
-const botRegex = /^\/cool guy|gabujeeno|kylan|tree of wisdom$/;
+// const botRegex = /^\/cool guy|gabujeeno|kylan|tree of wisdom$/;
+const botRegex = /\bgabujeeno\b|\bkylan\b|\btree of wisdom\b/i;
 
 function respond() {
   console.log(this.req.body);
@@ -30,7 +31,6 @@ async function postMessage(text) {
       text: text,
     }),
   };
-  
   try {
     console.log("Posting bot response...");
 
