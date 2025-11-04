@@ -6,19 +6,47 @@ const botID = process.env.BOT_ID;
 const baseUrl = process.env.GROUPME_BASE_URL;
 
 const triggerWordsArray = ["kylan", "gabujeeno", "tree of wisdom", "gorf"];
+const foodWordsArray = ["pho", "bbh", "eggroll", "lumpia"];
 
-const botRegex = buildRegexStringFromArray(triggerWordsArray);
+const triggerWordsObject = {
+  general: triggerWordsArray,
+  food: foodWordsArray,
+};
+
+const botResponseObject = {
+  general: cool(),
+  food: "Ohhh YUMMY!",
+};
+
+const getTriggerWordTypeFromObject = (word) => {
+  const wordTypes = Object.keys(triggerWordsObject);
+
+  for (let i = 0; i < wordTypes.length; i++) {
+    if (
+      triggerWordsObject[wordTypes[i]].find(
+        (wordInArray) => wordInArray.toLowerCase() === word.toLowerCase()
+      )
+    ) {
+      return wordTypes[i];
+    }
+  }
+};
 
 async function postMessage(req, res) {
-  const botResponse = cool();
-
   const request = req.body;
-  console.log("groupme post body", req.body);
-  const text = request?.text?.toLowerCase().trim();
+  const text = request?.text;
+  const wordType = getTriggerWordTypeFromObject(text);
+  const botResponse = botResponseObject[wordType];
 
-  console.log(text);
-
-  console.log("regex test", botRegex.test(text));
+  // replace with regex?
+  const isTriggerWord = (requestWord) => {
+    const botRegex =
+      getTriggerWordTypeFromObject(requestWord) &&
+      buildRegexStringFromArray(
+        triggerWordsObject[getTriggerWordTypeFromObject(requestWord)]
+      );
+    return botRegex.test(requestWord);
+  };
 
   const postToGroupmeBot = async () => {
     try {
@@ -55,7 +83,7 @@ async function postMessage(req, res) {
     }
   };
 
-  request?.text && botRegex.test(text)
+  request?.text && isTriggerWord(text)
     ? await postToGroupmeBot(botResponse)
     : res.status(200).json({ ...req.body, message: "Text ignored." });
 }
