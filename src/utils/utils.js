@@ -5,7 +5,9 @@ const buildRegexStringFromArray = (arrayOfKeywords) => {
   if (arrayOfKeywords) {
     const reduceArrayIntoString = arrayOfKeywords.reduce(
       (accumulator, currentValue, index) => {
-        if (index === 0) {
+        if (index === 0 && currentValue[0] === "/") {
+          return `${currentValue}`;
+        } else if (index === 0 && currentValue[0] !== "/") {
           return `\\b${currentValue}\\b`;
         } else {
           return `${accumulator}|\\b${currentValue}\\b`;
@@ -14,12 +16,12 @@ const buildRegexStringFromArray = (arrayOfKeywords) => {
       ""
     );
 
-    const regexFromReduecedArrayIntoString = new RegExp(
+    const regexFromReducedArrayIntoString = new RegExp(
       `${reduceArrayIntoString}`,
       "i" // case insensitive flag
     );
 
-    return regexFromReduecedArrayIntoString;
+    return regexFromReducedArrayIntoString;
   } else {
     return null;
   }
