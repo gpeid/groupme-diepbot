@@ -1,30 +1,32 @@
 {
-  "name": "node-js-getting-started",
+  "name": "groupme-diepbot",
   "version": "0.1.2",
-  "description": "A sample Node.js app using Express 4",
-  "main": "index.js",
+  "description": "A basic chatbot Typescript, NodeJS, Express",
+  "main": "index.ts",
   "scripts": {
-    "start": "node index.js",
-    "dev": "node --watch ./"
+    "start": "tsx index.ts",
+    "dev": "tsx --watch ./"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.81.0",
     "axios": "^1.13.1",
     "cool-ascii-faces": "~1.3.x",
     "director": "",
     "dotenv": "^17.2.3",
-    "express": "^5.1.0"
+    "express": "^5.1.0",
+    "ts-node": "^10.9.2",
+    "tsx": "^4.20.6"
   },
   "engines": {
     "node": "22.x"
   },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/heroku/node-js-getting-started"
-  },
   "keywords": [
     "node",
-    "heroku",
     "express"
   ],
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "@types/express": "^5.0.5",
+    "@types/node": "^24.10.1"
+  }
 }

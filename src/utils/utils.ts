@@ -1,10 +1,10 @@
 // Helper function to construct regex from array of trigger words
 // Regex is used to test whether a trigger word is has been sent in chat
 
-const buildRegexStringFromArray = (arrayOfKeywords) => {
+const buildRegexStringFromArray = (arrayOfKeywords: Array<string>) => {
   if (arrayOfKeywords) {
     const reduceArrayIntoString = arrayOfKeywords.reduce(
-      (accumulator, currentValue, index) => {
+      (accumulator: string, currentValue: string, index) => {
         if (index === 0 && currentValue[0] === "/") {
           return `${currentValue}`;
         } else if (index === 0 && currentValue[0] !== "/") {
@@ -27,4 +27,4 @@ const buildRegexStringFromArray = (arrayOfKeywords) => {
   }
 };
 
-exports.buildRegexStringFromArray = buildRegexStringFromArray;
+export { buildRegexStringFromArray }
